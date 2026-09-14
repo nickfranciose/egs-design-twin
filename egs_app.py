@@ -277,8 +277,8 @@ here1 = min(max(n_prod, 1), ws1[-1]) - 1                            # current pr
 # ------------------------------------------------------------------ header + metrics (always visible)
 st.title("EGS Design Twin")
 st.caption("Injectors in the lower bench, producers in the upper; a live thermal-hydraulic model + "
-           "decomposed cost model. Beyond the power-only study of Singh et al. (2025, URTeC 4245311): "
-           "NPV / IRR per DSU, driven by every design & cost lever.")
+           "decomposed cost model — NPV / IRR per DSU, driven by every design & cost lever. "
+           "A fast, economics-forward companion to detailed studies like Singh et al. (2025, URTeC 4245311).")
 c1, c2, c3, c4, c5, c6 = st.columns(6)
 c1.metric("NPV / DSU (per mile)", f"${proj['npv']/1e6:.0f}MM")
 c2.metric("IRR", f"{proj['irr']*100:.0f}%" if np.isfinite(proj['irr']) else "n/a")
