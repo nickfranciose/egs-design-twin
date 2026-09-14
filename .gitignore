@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+egs_report.html
+.streamlit/secrets.toml
+venv/
+.venv/
