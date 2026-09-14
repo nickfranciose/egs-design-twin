@@ -624,7 +624,7 @@ with viz_surf:
     names = list(L.keys())
     s1, s2, s3 = st.columns(3)
     xname = s1.selectbox("X lever", names, index=names.index("Producers / mile"))
-    yname = s2.selectbox("Y lever", names, index=names.index("Injectors / mile"))
+    yname = s2.selectbox("Y lever", names, index=names.index("Fluid (gal/ft)"))
     metric = s3.selectbox("Surface metric (Z)", METRICS)
     if xname == yname:
         st.warning("Pick two different levers for the X and Y axes.")
