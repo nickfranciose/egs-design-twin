@@ -279,6 +279,9 @@ st.title("EGS Design Twin")
 st.caption("Injectors in the lower bench, producers in the upper; a live thermal-hydraulic model + "
            "decomposed cost model — NPV / IRR per DSU, driven by every design & cost lever. "
            "A fast, economics-forward companion to detailed studies like Singh et al. (2025, URTeC 4245311).")
+st.info("👋 Everything here is live. Drag a lever in the left sidebar — try **Producers / mile** — and watch the "
+        "gunbarrel, the power, and the NPV all recompute at once. That coupling is the point: cost and performance "
+        "ride the same design levers, so the surfaces show you where the optimum is.")
 c1, c2, c3, c4, c5, c6 = st.columns(6)
 c1.metric("NPV / DSU (per mile)", f"${proj['npv']/1e6:.0f}MM")
 c2.metric("IRR", f"{proj['irr']*100:.0f}%" if np.isfinite(proj['irr']) else "n/a")
@@ -571,11 +574,13 @@ def fig_aperture():
 viz_gun, viz_survey, viz_econ, viz_perf, viz_surf = st.tabs(
     ["🛢 Gunbarrel", "🧭 3D Survey", "💰 Economics", "📉 Performance", "🌐 Sensitivities"])
 with viz_gun:
+    st.markdown("**Live thermal cross-section.** Add producers in the sidebar and watch the cold plumes merge.")
     st.plotly_chart(fig_gunbarrel(560), use_container_width=True)
     st.caption("Injectors (▽) lower bench, producers (△) upper bench, separated by the bench-separation lever. "
                "**Injector depth** sets reservoir temperature (deeper = hotter); wells/mile set the pattern. "
                "Everything redraws live from the sidebar.")
 with viz_survey:
+    st.markdown("**The well pattern and stimulated fractures, to scale.** Drag to orbit.")
     st.plotly_chart(fig_survey(), use_container_width=True)
     st.caption("The gunbarrel extruded along the lateral — wellbores run into the page; each cluster carries a "
                "**connected biwing aperture sheet** (the same field as the panel below, now a filled planar surface "
@@ -591,6 +596,7 @@ with viz_survey:
                "and that same percentile scales the wings in the 3-D survey above. **Asymmetric (biwing)** lets one "
                "wing outgrow the other; **Peak aperture** sets the magnitude.")
 with viz_econ:
+    st.markdown("**Where the money is.** The well-cost breakdown, and the well spacing that maximizes DSU value.")
     cost_unit = st.selectbox("Cost basis", ["$/hz ft", "Total ($MM/well)"], key="cost_unit")
     st.plotly_chart(fig_cost(cost_unit), use_container_width=True)
     e1, e2 = st.columns(2)
@@ -608,11 +614,13 @@ with viz_econ:
     st.caption("**Paired 1:1** — producers AND injectors added together (matched wine-rack). Single-well PV and "
                "total DSU vs the paired count; DSU starts at 0 (no wells) and peaks (★) at the optimal paired density.")
 with viz_perf:
+    st.markdown("**Power and temperature decline** over the 30-year life.")
     st.plotly_chart(fig_decline(), use_container_width=True)
     st.caption("Per-producer net electric power and produced temperature over 30 years. The cold front from the "
                "injectors lags the fluid (thermal retardation) → decade-scale breakthrough; tighter spacing or "
                "a shallower (cooler) reservoir pulls breakthrough earlier.")
 with viz_surf:
+    st.markdown("**Find the optimum.** Pick any two levers; the surface shows where value peaks.")
     names = list(L.keys())
     s1, s2, s3 = st.columns(3)
     xname = s1.selectbox("X lever", names, index=names.index("Producers / mile"))
