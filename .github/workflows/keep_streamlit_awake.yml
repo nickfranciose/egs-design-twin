@@ -1,0 +1,44 @@
+# Keep egs-design-twin.streamlit.app awake.
+# Community Cloud sleeps apps after 12h without real (websocket) traffic;
+# plain HTTP pings don't count, so this opens the app in headless Chromium.
+#
+# Runs every 8 hours; can also be triggered manually from the Actions tab.
+# Note: GitHub pauses scheduled workflows after ~60 days with no repo
+# activity - it emails you first; one click re-enables it.
+
+name: Keep Streamlit app awake
+on:
+  schedule:
+    - cron: '17 */8 * * *'   # every 8h (offset from the top of the hour)
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          python -m playwright install chromium --with-deps
+      - name: Visit app (and wake it if asleep)
+        run: |
+          python - <<'PY'
+          from playwright.sync_api import sync_playwright
+          URL = "https://egs-design-twin.streamlit.app/"
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page()
+              page.goto(URL, timeout=120_000)
+              page.wait_for_timeout(15_000)
+              # If the app is hibernating, click the wake button and wait for boot
+              try:
+                  page.get_by_text("get this app back up", exact=False).click(timeout=5_000)
+                  print("App was asleep - clicked wake, waiting for boot...")
+                  page.wait_for_timeout(90_000)
+              except Exception:
+                  print("No wake button - app already running.")
+              print("Final title:", page.title())
+              assert "Streamlit" in page.title() or "EGS" in page.title()
+              browser.close()
+          PY
